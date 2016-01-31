@@ -1,5 +1,5 @@
 ---
-title       : Analysis of Senior Easy Card users behavior
+title       : Analysis of Senior Easy Card Users Behavior
 subtitle    : 
 author      : Lawrence Siao
 job         : 
@@ -53,12 +53,12 @@ S3 | week 6  | 9/14-9/20
 S4 | week 7  | 10/19-10/25
 S4 | week 8  | 12/7-12/13
 
-# *Not include Special Date、Typhoon、National Holiday
+# *Not include any National Holiday
 
 
 
 
-# * TimeStamp: Out of Station 
+# * TimeStamp: Outbound  
 
 --- .dark .segue
 
@@ -301,7 +301,7 @@ p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) +
 
 
 ---
-## Normalization 
+## Normalization is needed
 
 <img src = './resources/23.jpg' height="400px"></img>
 
