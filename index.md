@@ -87,7 +87,7 @@ latest_d <- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time)
 
 
 ---
-## Merge it with raw data to find the station name
+## Merge it with raw data to find the station name it belong to
 
 ```r
 latest <- merge(rawData1,latest_d, by.x = c("Id","Time"),by.y = c("Id","latest_day"),
@@ -124,16 +124,16 @@ map +geom_point(aes(x=lon, y=lat,size=n_citizen),color="black",data= mrt)+
 --- 
 ## Moving Range Measurement 
 
-1. `The data from website of MRT` 
-2. Parse them down by a parser
+1. `The data from website of MRT company` 
+2. Parsed them down by a web parser
 
 <img src = './resources/8.jpg' height="400px"></img>
 
 ---
 ## Moving Range Measurement 
 
-1. The data from website of MRT 
-2. `Parse them down by a parser`
+1. The data from website of MRT company
+2. `Parsed them down by a web parser`
 
 <img src = './resources/8.jpg' height="400px"></img>
 <img style="float: right;" src = './resources/9.jpg' height="400px"></img>
@@ -159,8 +159,8 @@ Combined the parsed data with the raw data
 ## Moving Range Measurement 
 # Now we get:
 
-1. Where those user live in.
-2. How long each user spend on MRT.
+1. Where those users live in.
+2. How long do each user spend on MRT.
 
 --- .dark .segue
 
@@ -169,7 +169,7 @@ Combined the parsed data with the raw data
 ---
 ## Preprocessing
 
-First, we plot those stations with average 
+First, we plotted those stations with average moving time the senior citizens there spend
 
 
 ```r
@@ -193,7 +193,7 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data=
 ---
 ## Preprocessing
 
-`Of course that people live in these areas spend more time on commuting....`
+`Of course those people live in the areas far away from city center spend more time on commuting....`
 
 
 ```r
@@ -205,16 +205,16 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data=
 ---
 ## Preprocessing
 
-`We need to find some adjustment variable to adjust the traveling time of different station.`
+`We need to find some adjustment variable to adjust the traveling time the senior citizens spent among different stations.`
 
 <img src = './resources/15.jpg' height="400px"></img>
 
 ---
 ## Preprocessing
 
-`The Average traveling Time to each other Stations.`<br />
+`The average traveling time to each station.`<br />
 `For example: 台北車站:16.30435 (min) and 淡水:46.94565 (min)`<br />
-`By dividing this adjusting factor, we could realize the where the real energetic senior citizens lived in.`
+`By dividing this adjusting factor, we could realize where those real energetic senior citizens lived in.`
 
 <img src = './resources/16.jpg'></img>
 <img style="float: center;" src = './resources/17.jpg'></img>
@@ -222,7 +222,7 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data=
 ---
 ## Preprocessing
 
-Calculate the Benchmark (3rd Qu.)
+Calculated the Benchmark of whether energetic or not  (3rd Qu.)
 
 
 ```r
@@ -241,7 +241,7 @@ summary(tmp[-1])
 ---
 ## Preprocessing
 
-Calculate number of energetic senior citizens
+Calculated number of energetic senior citizens
 
 ```r
 files <- list.files("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/")
@@ -265,8 +265,8 @@ map +geom_point(aes(x=lon, y=lat,size=n_Energetic),color='black',data=
 ---
 
 ## Preprocessing
-1. Try to use predicative model to seperate the whole Taipei City in to different zones with high populated energetic senior citizen
-2. Choose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive
+1. Tried to develop predicative model to seperate the whole Taipei City into different zones with high populated energetic senior citizens
+2. Chose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive
 
 --- .dark .segue
 
@@ -305,7 +305,7 @@ p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) +
 ---
 ## Something is still going wrong
 
-`Another preprocessing is Needed`
+`Another preprocessing is needed`
 
 <img src = './resources/22.jpg' height="400px"></img>
 
