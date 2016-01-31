@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Analysis of Senior Easy Card users behavior</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Analysis of Senior Easy Card users behavior">
+  <meta name="author" content="Lawrence Siao">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Analysis of Senior Easy Card users behavior</h1>
+    <h2></h2>
+    <p>Lawrence Siao<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Leverage data from Easy Card to find out the potential demand of senior citizens for excercising</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img style="float: middle;" src = './resources/1.jpg' height="300px",width='900px'></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Outline</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Sampling Process</p>
+
+<p>Residence Tagging</p>
+
+<p>Moving Range Measurement </p>
+
+<p>Preprocessing</p>
+
+<p>CART Model Building</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="dark segue" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Sampling Process</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Raw Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src = './resources/2.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Sampling Process</h2>
+  </hgroup>
+  <article data-timings="">
+    <table><thead>
+<tr>
+<th>Season</th>
+<th>Week</th>
+<th>Duration</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>S1</td>
+<td>week 1</td>
+<td>1/19-1/25</td>
+</tr>
+<tr>
+<td>S1</td>
+<td>week 2</td>
+<td>3/16-3/22</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>week 3</td>
+<td>4/13-4/19</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>week 4</td>
+<td>6/15-6/21</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>week 5</td>
+<td>7/20-7/26</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>week 6</td>
+<td>9/14-9/20</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>week 7</td>
+<td>10/19-10/25</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>week 8</td>
+<td>12/7-12/13</td>
+</tr>
+</tbody></table>
+
+<h1>*Not include Special Date、Typhoon、National Holiday</h1>
+
+<h1>* TimeStamp: Out of Station</h1>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="dark segue" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>Residence Tagging</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>Time Information Extracting</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">rawData1$hour &lt;- hour(rawData1$Time)
+rawData1$year &lt;- year(rawData1$Time)
+rawData1$month &lt;- month(rawData1$Time)
+rawData1$day &lt;- day(rawData1$Time)
+rawData1$weekday &lt;- weekdays(rawData1$Time)
+rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
+</code></pre>
+
+<p><img src = './resources/3.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Left the lastest record of each user each day</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">latest_d &lt;- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time))
+</code></pre>
+
+<p><img src = './resources/4.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>Merge it with raw data to find the station name</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">latest &lt;- merge(rawData1,latest_d, by.x = c(&quot;Id&quot;,&quot;Time&quot;),by.y = c(&quot;Id&quot;,&quot;latest_day&quot;),
+                all.y = T)
+</code></pre>
+
+<p><img style="float: middle;" src = './resources/5.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>Where do those users live in?</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">most_fequent &lt;- function(x){
+  return(names(sort(table(x),decreasing=TRUE)[1]))
+}
+latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
+</code></pre>
+
+<p><img style="float: middle;" src = './resources/6.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>Combined with Google Map</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=n_citizen),color=&quot;black&quot;,data= mrt)+
+  theme_grey(base_family=&quot;STHeiti&quot;)
+</code></pre>
+
+<p><img style="float: middle;" src = './resources/7.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="dark segue" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>Moving Range Measurement</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>Moving Range Measurement</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li><code>The data from website of MRT</code> </li>
+<li>Parse them down by a parser</li>
+</ol>
+
+<p><img src = './resources/8.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Moving Range Measurement</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>The data from website of MRT </li>
+<li><code>Parse them down by a parser</code></li>
+</ol>
+
+<p><img src = './resources/8.jpg' height="400px"></img>
+<img style="float: right;" src = './resources/9.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>Moving Range Measurement</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Combined the parsed data with the raw data</p>
+
+<p><code>Ex: the user,1625328709, who lives in 古亭. And the total time he/she spend on traveling on 2014/1/19 are sum of traveling time from 古亭 to 台北車站 and from 台北車站 to 古亭, which is 7 + 7 = 14 min</code></p>
+
+<p><img style="float: right;" src = './resources/10.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>Moving Range Measurement</h2>
+  </hgroup>
+  <article data-timings="">
+    <h1>Result:</h1>
+
+<p><img src = './resources/11.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>Moving Range Measurement</h2>
+  </hgroup>
+  <article data-timings="">
+    <h1>Now we get:</h1>
+
+<ol>
+<li>Where those user live in.</li>
+<li>How long each user spend on MRT.</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="dark segue" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>First, we plot those stations with average </p>
+
+<pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= mrt)+
+  theme_grey(base_family=&quot;STHeiti&quot;)
+</code></pre>
+
+<p><img style="float: middle;" src = './resources/12.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>keep those above median </p>
+
+<pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= 
+  mrt[mrt$AvgDist&gt; median(mrt$AvgDist),])+theme_grey(base_family=&quot;STHeiti&quot;)
+</code></pre>
+
+<p><img style="float: middle;" src = './resources/13.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><code>Of course that people live in these areas spend more time on commuting....</code></p>
+
+<pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= 
+  mrt[mrt$AvgDist&gt; median(mrt$AvgDist),])+theme_grey(base_family=&quot;STHeiti&quot;)
+</code></pre>
+
+<p><img style="float: middle;" src = './resources/14.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><code>We need to find some adjustment variable to adjust the traveling time of different station.</code></p>
+
+<p><img src = './resources/15.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><code>The Average traveling Time to each other Stations.</code><br />
+<code>For example: 台北車站:16.30435 (min) and 淡水:46.94565 (min)</code><br />
+<code>By dividing this adjusting factor, we could realize the where the real energetic senior citizens lived in.</code></p>
+
+<p><img src = './resources/16.jpg'></img>
+<img style="float: center;" src = './resources/17.jpg'></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Calculate the Benchmark (3rd Qu.)</p>
+
+<pre><code class="r">tmp=0
+files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
+for(f in files){
+  tmp1 &lt;- read.csv(paste0(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;,f),header = T)
+  ind &lt;- which(mrt$name==strsplit(f,&quot;.csv&quot;)[[1]])
+  tmp &lt;- c(tmp,(tmp1$Station[!is.na(tmp1$Station)]/ mrt$adjV[ind]))
+}
+summary(tmp[-1])
+</code></pre>
+
+<p><img src = './resources/18.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Calculate number of energetic senior citizens</p>
+
+<pre><code class="r">files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
+for(f in files){
+  tmp &lt;- read.csv(paste0(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;,f),header = T)
+  ind &lt;- which(mrt$name==strsplit(f,&quot;.csv&quot;)[[1]])
+  mrt$n_Energetic[ind] &lt;- sum((tmp1$Station[!is.na(tmp1$Station)]/ mrt$adjV[ind]) &gt; 1.698)
+}
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-26" style="background:;">
+  <hgroup>
+    <h2>Plot it on GoolgeMap</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=n_Energetic),color=&#39;black&#39;,data= 
+  mrt)+theme_grey(base_family=&quot;STHeiti&quot;)
+</code></pre>
+
+<p><img src = './resources/19.jpg' ></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-27" style="background:;">
+  <hgroup>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Try to use predicative model to seperate the whole Taipei City in to different zones with high populated energetic senior citizen</li>
+<li>Choose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="dark segue" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>Model Building</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>Model Building</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">tr.control = trainControl(method = &quot;cv&quot;, number = 2)
+cp.grid = expand.grid( .cp = (0:15)*0.001)
+tr = train(n_energetic ~ lat + lon, data = mrt, method = &quot;rpart&quot;, 
+           trControl = tr.control, tuneGrid = cp.grid)
+best.tree = tr$finalModel
+prp(best.tree, digits = 8)
+</code></pre>
+
+<p><img src = './resources/20.jpg' height="400px", margin:auto></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>Model Building</h2>
+  </hgroup>
+  <article data-timings="">
+    <h1>Hot Zone:</h1>
+
+<pre><code class="r">p = map + geom_point(aes(x=lon, y=lat,size=n_Energetic), col =&#39;black&#39;, data= mrt)
+
+p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) + 
+  geom_hline(yintercept = 25.062953)+geom_vline(xintercept = 121.55131)
+</code></pre>
+
+<p><img src = './resources/21.jpg' , margin:auto></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>Something is still going wrong</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><code>Another preprocessing is Needed</code></p>
+
+<p><img src = './resources/22.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>Normalization</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src = './resources/23.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>Preprocessing Again</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">tmp=data.frame(Station=0,name=&quot;&quot;)
+files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
+for(f in files){
+  tmp1 &lt;- read.csv(paste0(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;,f),header = T)
+  tmp1$name &lt;- strsplit(f,&quot;.csv&quot;)[[1]]
+  ind &lt;- which(mrt$name==strsplit(f,&quot;.csv&quot;)[[1]])
+  tmp &lt;- rbind(tmp,tmp1[!is.na(tmp1$Station),c(&quot;Station&quot;,&quot;name&quot;)])
+}
+tmp = tmp[-1,]
+tmp$Normalized.Dist &lt;- normalize(tmp$Station)
+tmp$AdjDist.Normalized &lt;- 0
+
+for(i in unique(as.character(mrt$name))){
+  tmp[tmp$name==i,&quot;AdjDist.Normalized&quot;] &lt;- tmp[tmp$name==i,&quot;Normalized.Dist&quot;]/mrt$adjV.Normalized[mrt$name==i]
+}
+summary(tmp$AdjDist.Normalized)
+</code></pre>
+
+<p><img src = './resources/24.jpg' , margin:auto></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-34" style="background:;">
+  <hgroup>
+    <h2>Preprocessing Again</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">for(i in unique(as.character(mrt$name))){
+  mrt$n_Energetic.normalized[mrt$name==i] &lt;- 
+    sum(tmp$AdjDist.Normalized[tmp$name==i] &gt; 1.0260)
+}
+p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized),
+                     col =heat.colors(1), data= mrt)
+</code></pre>
+
+<p><img src = './resources/25.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-35" style="background:;">
+  <hgroup>
+    <h2>Model Building Again</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">tr.control = trainControl(method = &quot;cv&quot;, number = 2)
+cp.grid = expand.grid( .cp = (0:15)*0.001)
+tr = train(n_Energetic.normalized ~ lat + lon, data = mrt, method = &quot;rpart&quot;,
+           trControl = tr.control, tuneGrid = cp.grid)
+best.tree = tr$finalModel
+prp(best.tree, digits = 8)
+</code></pre>
+
+<p><img src = './resources/26.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-36" style="background:;">
+  <hgroup>
+    <h2>Model Building Again</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized), 
+                     col =heat.colors(1), data= mrt)
+</code></pre>
+
+<p><img style="float: left;" src = './resources/27.jpg' height="380px"></img>
+<img style="float: right;" src = './resources/28.jpg' height="330px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-37" style="background:;">
+  <article data-timings="">
+    <p><img src = './resources/29.jpg' height="700px",width="1200px" , margin:auto></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Leverage data from Easy Card to find out the potential demand of senior citizens for excercising'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Outline'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Sampling Process'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Raw Data'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Sampling Process'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Residence Tagging'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Time Information Extracting'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Left the lastest record of each user each day'>
+         8
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=9 title='Merge it with raw data to find the station name'>
+         9
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=10 title='Where do those users live in?'>
+         10
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=11 title='Combined with Google Map'>
+         11
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=12 title='Moving Range Measurement'>
+         12
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=13 title='Moving Range Measurement'>
+         13
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=14 title='Moving Range Measurement'>
+         14
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=15 title='Moving Range Measurement'>
+         15
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=16 title='Moving Range Measurement'>
+         16
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=17 title='Moving Range Measurement'>
+         17
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=18 title='Preprocessing'>
+         18
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=19 title='Preprocessing'>
+         19
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=20 title='Preprocessing'>
+         20
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=21 title='Preprocessing'>
+         21
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=22 title='Preprocessing'>
+         22
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=23 title='Preprocessing'>
+         23
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=24 title='Preprocessing'>
+         24
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=25 title='Preprocessing'>
+         25
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=26 title='Plot it on GoolgeMap'>
+         26
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=27 title='Preprocessing'>
+         27
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=28 title='Model Building'>
+         28
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=29 title='Model Building'>
+         29
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=30 title='Model Building'>
+         30
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=31 title='Something is still going wrong'>
+         31
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=32 title='Normalization'>
+         32
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=33 title='Preprocessing Again'>
+         33
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=34 title='Preprocessing Again'>
+         34
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=35 title='Model Building Again'>
+         35
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=36 title='Model Building Again'>
+         36
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=37 title='NA'>
+         37
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
