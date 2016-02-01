@@ -1,7 +1,7 @@
 ---
-title       : Analysis of Senior Easy Card Users Behavior
+title       : Analysis of Senior Easy Card users behavior
 subtitle    : 
-author      : Chun-Chang Siao
+author      : Lawrence Siao
 job         : 
 framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
@@ -11,7 +11,7 @@ mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 
 ---
-## Leverage data from Easy Card to find out the potential demand of senior citizens for excercising
+## Leverage data from Easy Card to find out the potential demand of senior citizens for exercise
 
 <img style="float: middle;" src = './resources/1.jpg' height="300px",width='900px'></img>
 
@@ -53,19 +53,16 @@ S3 | week 6  | 9/14-9/20
 S4 | week 7  | 10/19-10/25
 S4 | week 8  | 12/7-12/13
 
-# *Not include any National Holiday
+# *National Holidays are not included
 
-
-
-
-# * TimeStamp: Outbound  
+# * TimeStamp: Out of Station 
 
 --- .dark .segue
 
 ## Residence Tagging
 
 ---
-## Time Information Extracting 
+## Time Information Extraction
 
 ```r
 rawData1$hour <- hour(rawData1$Time)
@@ -78,7 +75,7 @@ rawData1$date <- format(rawData1$Time, format="%B %d %Y")
 <img src = './resources/3.jpg' ></img>
 
 ---
-## Left the lastest record of each user each day
+## Keep the last record of each user each day
 
 ```r
 latest_d <- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time))
@@ -87,7 +84,7 @@ latest_d <- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time)
 
 
 ---
-## Merge it with raw data to find the station name it belong to
+## Merge it with raw data to find the station name
 
 ```r
 latest <- merge(rawData1,latest_d, by.x = c("Id","Time"),by.y = c("Id","latest_day"),
@@ -97,7 +94,7 @@ latest <- merge(rawData1,latest_d, by.x = c("Id","Time"),by.y = c("Id","latest_d
 
 ---
 
-## Where do those users live in?
+## Where do those users live?
 
 ```r
 most_fequent <- function(x){
@@ -124,16 +121,16 @@ map +geom_point(aes(x=lon, y=lat,size=n_citizen),color="black",data= mrt)+
 --- 
 ## Moving Range Measurement 
 
-1. `The data from website of MRT company` 
-2. Parsed them down by a web parser
+1. `The website of the MRT` 
+2. Using a parser written in Python
 
 <img src = './resources/8.jpg' height="400px"></img>
 
 ---
 ## Moving Range Measurement 
 
-1. The data from website of MRT company
-2. `Parsed them down by a web parser`
+1. The website of the MRT 
+2. `Using a parser written in Python`
 
 <img src = './resources/8.jpg' height="400px"></img>
 <img style="float: right;" src = './resources/9.jpg' height="400px"></img>
@@ -141,7 +138,7 @@ map +geom_point(aes(x=lon, y=lat,size=n_citizen),color="black",data= mrt)+
 --- 
 ## Moving Range Measurement 
 
-Combined the parsed data with the raw data
+Comparison and combination of the parsed data with the raw data
 
 `Ex: the user,1625328709, who lives in 古亭. And the total time he/she spend on traveling on 2014/1/19 are sum of traveling time from 古亭 to 台北車站 and from 台北車站 to 古亭, which is 7 + 7 = 14 min`
 
@@ -159,8 +156,8 @@ Combined the parsed data with the raw data
 ## Moving Range Measurement 
 # Now we get:
 
-1. Where those users live in.
-2. How long do each user spend on MRT.
+1. Where those user live.
+2. How long each user spends on the MRT.
 
 --- .dark .segue
 
@@ -169,7 +166,7 @@ Combined the parsed data with the raw data
 ---
 ## Preprocessing
 
-First, we plotted those stations with average moving time the senior citizens there spend
+First, we plot those stations with averages
 
 
 ```r
@@ -181,7 +178,7 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data= mrt)+
 ---
 ## Preprocessing
 
-keep those above median 
+Keep those above median 
 
 
 ```r
@@ -193,7 +190,7 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data=
 ---
 ## Preprocessing
 
-`Of course those people live in the areas far away from city center spend more time on commuting....`
+`Of course those people live in these areas spend more time on commuting....`
 
 
 ```r
@@ -205,16 +202,16 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data=
 ---
 ## Preprocessing
 
-`We need to find some adjustment variable to adjust the traveling time the senior citizens spent among different stations.`
+`We need to find some adjustment variable to adjust the traveling time to different station.`
 
 <img src = './resources/15.jpg' height="400px"></img>
 
 ---
 ## Preprocessing
 
-`The average traveling time to each station.`<br />
+`The Average traveling Time to each other Station.`<br />
 `For example: 台北車站:16.30435 (min) and 淡水:46.94565 (min)`<br />
-`By dividing this adjusting factor, we could realize where those real energetic senior citizens lived in.`
+`By dividing this adjusting factor, we could realize where the real energetic senior citizens lived in.`
 
 <img src = './resources/16.jpg'></img>
 <img style="float: center;" src = './resources/17.jpg'></img>
@@ -222,7 +219,7 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data=
 ---
 ## Preprocessing
 
-Calculated the Benchmark of whether energetic or not  (3rd Qu.)
+Calculate the Benchmark (3rd Qu.)
 
 
 ```r
@@ -241,7 +238,7 @@ summary(tmp[-1])
 ---
 ## Preprocessing
 
-Calculated number of energetic senior citizens
+Calculate number of energetic senior citizens
 
 ```r
 files <- list.files("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/")
@@ -253,7 +250,7 @@ for(f in files){
 ```
 
 ---
-## Plot it on GoolgeMap
+## Plot it on GoogleMap
 
 
 ```r
@@ -265,8 +262,8 @@ map +geom_point(aes(x=lon, y=lat,size=n_Energetic),color='black',data=
 ---
 
 ## Preprocessing
-1. Tried to develop predicative model to seperate the whole Taipei City into different zones with high populated energetic senior citizens
-2. Chose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive
+1. Try to use predicative model to seperate all of Taipei City in to different zones with high populated energetic senior citizens
+2. Choose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive
 
 --- .dark .segue
 
@@ -305,13 +302,13 @@ p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) +
 ---
 ## Something is still going wrong
 
-`Another preprocessing is needed`
+`Another preprocessing is Needed`
 
 <img src = './resources/22.jpg' height="400px"></img>
 
 
 ---
-## Normalization is needed
+## Normalization 
 
 <img src = './resources/23.jpg' height="400px"></img>
 
@@ -379,5 +376,6 @@ p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized),
 
 ---
 <img src = './resources/29.jpg' height="700px",width="1200px" , margin:auto></img>
+
 
 

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Analysis of Senior Easy Card Users Behavior</title>
+  <title>Analysis of Senior Easy Card users behavior</title>
   <meta charset="utf-8">
-  <meta name="description" content="Analysis of Senior Easy Card Users Behavior">
-  <meta name="author" content="Chun-Chang Siao">
+  <meta name="description" content="Analysis of Senior Easy Card users behavior">
+  <meta name="author" content="Lawrence Siao">
   <meta name="generator" content="slidify" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -32,9 +32,9 @@
     <!-- LOGO SLIDE -->
         <slide class="title-slide segue nobackground">
   <hgroup class="auto-fadein">
-    <h1>Analysis of Senior Easy Card Users Behavior</h1>
+    <h1>Analysis of Senior Easy Card users behavior</h1>
     <h2></h2>
-    <p>Chun-Chang Siao<br/></p>
+    <p>Lawrence Siao<br/></p>
   </hgroup>
   <article></article>  
 </slide>
@@ -43,7 +43,7 @@
     <!-- SLIDES -->
     <slide class="" id="slide-1" style="background:;">
   <hgroup>
-    <h2>Leverage data from Easy Card to find out the potential demand of senior citizens for excercising</h2>
+    <h2>Leverage data from Easy Card to find out the potential demand of senior citizens for exercise</h2>
   </hgroup>
   <article data-timings="">
     <p><img style="float: middle;" src = './resources/1.jpg' height="300px",width='900px'></img></p>
@@ -146,9 +146,9 @@
 </tr>
 </tbody></table>
 
-<h1>*Not include any National Holiday</h1>
+<h1>*National Holidays are not included</h1>
 
-<h1>* TimeStamp: Outbound</h1>
+<h1>* TimeStamp: Out of Station</h1>
 
   </article>
   <!-- Presenter Notes -->
@@ -166,7 +166,7 @@
 
 <slide class="" id="slide-7" style="background:;">
   <hgroup>
-    <h2>Time Information Extracting</h2>
+    <h2>Time Information Extraction</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">rawData1$hour &lt;- hour(rawData1$Time)
@@ -185,7 +185,7 @@ rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
 
 <slide class="" id="slide-8" style="background:;">
   <hgroup>
-    <h2>Left the lastest record of each user each day</h2>
+    <h2>Keep the last record of each user each day</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">latest_d &lt;- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time))
@@ -199,7 +199,7 @@ rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
 
 <slide class="" id="slide-9" style="background:;">
   <hgroup>
-    <h2>Merge it with raw data to find the station name it belong to</h2>
+    <h2>Merge it with raw data to find the station name</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">latest &lt;- merge(rawData1,latest_d, by.x = c(&quot;Id&quot;,&quot;Time&quot;),by.y = c(&quot;Id&quot;,&quot;latest_day&quot;),
@@ -214,7 +214,7 @@ rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
 
 <slide class="" id="slide-10" style="background:;">
   <hgroup>
-    <h2>Where do those users live in?</h2>
+    <h2>Where do those users live?</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">most_fequent &lt;- function(x){
@@ -260,8 +260,8 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
   </hgroup>
   <article data-timings="">
     <ol>
-<li><code>The data from website of MRT company</code> </li>
-<li>Parsed them down by a web parser</li>
+<li><code>The website of the MRT</code> </li>
+<li>Using a parser written in Python</li>
 </ol>
 
 <p><img src = './resources/8.jpg' height="400px"></img></p>
@@ -276,8 +276,8 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
   </hgroup>
   <article data-timings="">
     <ol>
-<li>The data from website of MRT company</li>
-<li><code>Parsed them down by a web parser</code></li>
+<li>The website of the MRT </li>
+<li><code>Using a parser written in Python</code></li>
 </ol>
 
 <p><img src = './resources/8.jpg' height="400px"></img>
@@ -292,7 +292,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Moving Range Measurement</h2>
   </hgroup>
   <article data-timings="">
-    <p>Combined the parsed data with the raw data</p>
+    <p>Comparison and combination of the parsed data with the raw data</p>
 
 <p><code>Ex: the user,1625328709, who lives in 古亭. And the total time he/she spend on traveling on 2014/1/19 are sum of traveling time from 古亭 to 台北車站 and from 台北車站 to 古亭, which is 7 + 7 = 14 min</code></p>
 
@@ -323,8 +323,8 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h1>Now we get:</h1>
 
 <ol>
-<li>Where those users live in.</li>
-<li>How long do each user spend on MRT.</li>
+<li>Where those user live.</li>
+<li>How long each user spends on the MRT.</li>
 </ol>
 
   </article>
@@ -346,7 +346,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p>First, we plotted those stations with average moving time the senior citizens there spend</p>
+    <p>First, we plot those stations with averages</p>
 
 <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= mrt)+
   theme_grey(base_family=&quot;STHeiti&quot;)
@@ -363,7 +363,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p>keep those above median </p>
+    <p>Keep those above median </p>
 
 <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= 
   mrt[mrt$AvgDist&gt; median(mrt$AvgDist),])+theme_grey(base_family=&quot;STHeiti&quot;)
@@ -380,7 +380,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p><code>Of course those people live in the areas far away from city center spend more time on commuting....</code></p>
+    <p><code>Of course those people live in these areas spend more time on commuting....</code></p>
 
 <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= 
   mrt[mrt$AvgDist&gt; median(mrt$AvgDist),])+theme_grey(base_family=&quot;STHeiti&quot;)
@@ -397,7 +397,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p><code>We need to find some adjustment variable to adjust the traveling time the senior citizens spent among different stations.</code></p>
+    <p><code>We need to find some adjustment variable to adjust the traveling time to different station.</code></p>
 
 <p><img src = './resources/15.jpg' height="400px"></img></p>
 
@@ -410,9 +410,9 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p><code>The average traveling time to each station.</code><br />
+    <p><code>The Average traveling Time to each other Station.</code><br />
 <code>For example: 台北車站:16.30435 (min) and 淡水:46.94565 (min)</code><br />
-<code>By dividing this adjusting factor, we could realize where those real energetic senior citizens lived in.</code></p>
+<code>By dividing this adjusting factor, we could realize where the real energetic senior citizens lived in.</code></p>
 
 <p><img src = './resources/16.jpg'></img>
 <img style="float: center;" src = './resources/17.jpg'></img></p>
@@ -426,7 +426,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p>Calculated the Benchmark of whether energetic or not  (3rd Qu.)</p>
+    <p>Calculate the Benchmark (3rd Qu.)</p>
 
 <pre><code class="r">tmp=0
 files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
@@ -449,7 +449,7 @@ summary(tmp[-1])
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p>Calculated number of energetic senior citizens</p>
+    <p>Calculate number of energetic senior citizens</p>
 
 <pre><code class="r">files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
 for(f in files){
@@ -465,7 +465,7 @@ for(f in files){
 
 <slide class="" id="slide-26" style="background:;">
   <hgroup>
-    <h2>Plot it on GoolgeMap</h2>
+    <h2>Plot it on GoogleMap</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=n_Energetic),color=&#39;black&#39;,data= 
@@ -484,8 +484,8 @@ for(f in files){
   </hgroup>
   <article data-timings="">
     <ol>
-<li>Tried to develop predicative model to seperate the whole Taipei City into different zones with high populated energetic senior citizens</li>
-<li>Chose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive</li>
+<li>Try to use predicative model to seperate all of Taipei City in to different zones with high populated energetic senior citizens</li>
+<li>Choose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive</li>
 </ol>
 
   </article>
@@ -545,7 +545,7 @@ p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) +
     <h2>Something is still going wrong</h2>
   </hgroup>
   <article data-timings="">
-    <p><code>Another preprocessing is needed</code></p>
+    <p><code>Another preprocessing is Needed</code></p>
 
 <p><img src = './resources/22.jpg' height="400px"></img></p>
 
@@ -555,7 +555,7 @@ p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) +
 
 <slide class="" id="slide-32" style="background:;">
   <hgroup>
-    <h2>Normalization is needed</h2>
+    <h2>Normalization</h2>
   </hgroup>
   <article data-timings="">
     <p><img src = './resources/23.jpg' height="400px"></img></p>
@@ -661,7 +661,7 @@ prp(best.tree, digits = 8)
     <ul>
       <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=1 title='Leverage data from Easy Card to find out the potential demand of senior citizens for excercising'>
+        data-slide=1 title='Leverage data from Easy Card to find out the potential demand of senior citizens for exercise'>
          1
       </a>
     </li>
@@ -697,25 +697,25 @@ prp(best.tree, digits = 8)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=7 title='Time Information Extracting'>
+        data-slide=7 title='Time Information Extraction'>
          7
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=8 title='Left the lastest record of each user each day'>
+        data-slide=8 title='Keep the last record of each user each day'>
          8
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=9 title='Merge it with raw data to find the station name it belong to'>
+        data-slide=9 title='Merge it with raw data to find the station name'>
          9
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=10 title='Where do those users live in?'>
+        data-slide=10 title='Where do those users live?'>
          10
       </a>
     </li>
@@ -811,7 +811,7 @@ prp(best.tree, digits = 8)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=26 title='Plot it on GoolgeMap'>
+        data-slide=26 title='Plot it on GoogleMap'>
          26
       </a>
     </li>
@@ -847,7 +847,7 @@ prp(best.tree, digits = 8)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=32 title='Normalization is needed'>
+        data-slide=32 title='Normalization'>
          32
       </a>
     </li>
