@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Analysis of Senior Easy Card Users Behavior</title>
+  <title>Analysis of Senior Metro Card Users Behavior</title>
   <meta charset="utf-8">
-  <meta name="description" content="Analysis of Senior Easy Card Users Behavior">
+  <meta name="description" content="Analysis of Senior Metro Card Users Behavior">
   <meta name="author" content="Chun-Chang Siao">
   <meta name="generator" content="slidify" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +32,7 @@
     <!-- LOGO SLIDE -->
         <slide class="title-slide segue nobackground">
   <hgroup class="auto-fadein">
-    <h1>Analysis of Senior Easy Card Users Behavior</h1>
+    <h1>Analysis of Senior Metro Card Users Behavior</h1>
     <h2></h2>
     <p>Chun-Chang Siao<br/></p>
   </hgroup>
@@ -43,10 +43,21 @@
     <!-- SLIDES -->
     <slide class="" id="slide-1" style="background:;">
   <hgroup>
-    <h2>Leverage data from Easy Card to find out the potential demand of senior citizens for exercise</h2>
+    <h2>Motivation</h2>
   </hgroup>
   <article data-timings="">
-    <p><img style="float: middle;" src = './resources/1.jpg' height="300px",width='900px'></img></p>
+    <ul>
+<li>Question: Where is the best place to locate the Elderly Sports Center?</li>
+<li><p>Assumption: The more energetic seniors live there, the more appropriate will be <br/></p></li>
+<li><p>Types of metro cards in Taipei: <br/></p>
+
+<ul>
+<li>Adult: Standard fare for the general public <br/></li>
+<li>Student: For registered students only <br/></li>
+<li><code>Senior: seniors aged over 65</code> <br/></li>
+</ul></li>
+<li><p>Leverege data from Metro Cards to solve this problem</p></li>
+</ul>
 
   </article>
   <!-- Presenter Notes -->
@@ -54,14 +65,30 @@
 
 <slide class="" id="slide-2" style="background:;">
   <hgroup>
+    <h2>The Main Idea</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li><p>Leverage data from Metro Cards to find out which areas of Taipei City are most populated by energetic seniors</p></li>
+<li><p>The area with the most eneretic seniors might be the best place to locate the elderly sports center </br></p></li>
+</ul>
+
+<p><img style="float: middle;" src = './resources/1.jpg' height="300px",width='900px'></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
     <h2>Outline</h2>
   </hgroup>
   <article data-timings="">
-    <p>Sampling Process</p>
+    <p>Raw Data Demonstrating</p>
 
 <p>Residence Tagging</p>
 
-<p>Moving Range Measurement </p>
+<p>Energetic Levels Measurement  </p>
 
 <p>Preprocessing</p>
 
@@ -71,9 +98,9 @@
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="dark segue" id="slide-3" style="background:;">
+<slide class="dark segue" id="slide-4" style="background:;">
   <hgroup>
-    <h2>Sampling Process</h2>
+    <h2>Raw Data Demonstrating</h2>
   </hgroup>
   <article data-timings="">
     
@@ -81,74 +108,12 @@
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-4" style="background:;">
+<slide class="" id="slide-5" style="background:;">
   <hgroup>
     <h2>Raw Data</h2>
   </hgroup>
   <article data-timings="">
     <p><img src = './resources/2.jpg' height="400px"></img></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-5" style="background:;">
-  <hgroup>
-    <h2>Sampling Process</h2>
-  </hgroup>
-  <article data-timings="">
-    <table><thead>
-<tr>
-<th>Season</th>
-<th>Week</th>
-<th>Duration</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>S1</td>
-<td>week 1</td>
-<td>1/19-1/25</td>
-</tr>
-<tr>
-<td>S1</td>
-<td>week 2</td>
-<td>3/16-3/22</td>
-</tr>
-<tr>
-<td>S2</td>
-<td>week 3</td>
-<td>4/13-4/19</td>
-</tr>
-<tr>
-<td>S2</td>
-<td>week 4</td>
-<td>6/15-6/21</td>
-</tr>
-<tr>
-<td>S3</td>
-<td>week 5</td>
-<td>7/20-7/26</td>
-</tr>
-<tr>
-<td>S3</td>
-<td>week 6</td>
-<td>9/14-9/20</td>
-</tr>
-<tr>
-<td>S4</td>
-<td>week 7</td>
-<td>10/19-10/25</td>
-</tr>
-<tr>
-<td>S4</td>
-<td>week 8</td>
-<td>12/7-12/13</td>
-</tr>
-</tbody></table>
-
-<h1>*National Holidays are not included</h1>
-
-<h1>* TimeStamp: Out of Station</h1>
 
   </article>
   <!-- Presenter Notes -->
@@ -169,12 +134,13 @@
     <h2>Time Information Extraction</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">rawData1$hour &lt;- hour(rawData1$Time)
-rawData1$year &lt;- year(rawData1$Time)
-rawData1$month &lt;- month(rawData1$Time)
-rawData1$day &lt;- day(rawData1$Time)
-rawData1$weekday &lt;- weekdays(rawData1$Time)
-rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
+    <pre><code class="r">library(lubridate)
+rawData1$hour &lt;- hour(rawData1$Time_Outbound)
+rawData1$year &lt;- year(rawData1$Time_Outbound)
+rawData1$month &lt;- month(rawData1$Time_Outbound)
+rawData1$day &lt;- day(rawData1$Time_Outbound)
+rawData1$weekday &lt;- weekdays(rawData1$Time_Outbound)
+rawData1$date &lt;- format(rawData1$Time_Outbound, format=&quot;%B %d %Y&quot;)
 </code></pre>
 
 <p><img src = './resources/3.jpg' ></img></p>
@@ -188,7 +154,9 @@ rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
     <h2>Keep the last record of each user each day</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">latest_d &lt;- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time))
+    <pre><code class="r">library(dplyr)
+lastRecord &lt;- summarise(group_by(rawData1,Id,year,month,day),
+                      lastRecord_in_EachDay= max(Time_Outbound))
 </code></pre>
 
 <p><img src = './resources/4.jpg' ></img></p>
@@ -202,8 +170,8 @@ rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
     <h2>Merge it with raw data to find the station name</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">latest &lt;- merge(rawData1,latest_d, by.x = c(&quot;Id&quot;,&quot;Time&quot;),by.y = c(&quot;Id&quot;,&quot;latest_day&quot;),
-                all.y = T)
+    <pre><code class="r">lastRecord_merged &lt;- merge(rawData1,lastRecord, by.x = c(&quot;Id&quot;,&quot;Time_Outbound&quot;),
+                by.y = c(&quot;Id&quot;,&quot;lastRecord_in_EachDay&quot;),all.y = T)
 </code></pre>
 
 <p><img style="float: middle;" src = './resources/5.jpg' ></img></p>
@@ -220,7 +188,7 @@ rawData1$date &lt;- format(rawData1$Time, format=&quot;%B %d %Y&quot;)
     <pre><code class="r">most_fequent &lt;- function(x){
   return(names(sort(table(x),decreasing=TRUE)[1]))
 }
-latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
+liveTable &lt;- aggregate( Station~ Id, lastRecord_merged, most_fequent)
 </code></pre>
 
 <p><img style="float: middle;" src = './resources/6.jpg' ></img></p>
@@ -234,8 +202,9 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Combined with Google Map</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=n_citizen),color=&quot;black&quot;,data= mrt)+
-  theme_grey(base_family=&quot;STHeiti&quot;)
+    <pre><code class="r">library(ggmap)
+map &lt;- qmap(location = c(lon = 121.512386, lat = 25.056269), zoom = 12)
+map +geom_point(aes(x=lon, y=lat,size=n_citizen),color=&quot;black&quot;,data= metro)
 </code></pre>
 
 <p><img style="float: middle;" src = './resources/7.jpg' ></img></p>
@@ -246,7 +215,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
 
 <slide class="dark segue" id="slide-12" style="background:;">
   <hgroup>
-    <h2>Moving Range Measurement</h2>
+    <h2>Energetic Levels Measurement</h2>
   </hgroup>
   <article data-timings="">
     
@@ -256,11 +225,24 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
 
 <slide class="" id="slide-13" style="background:;">
   <hgroup>
-    <h2>Moving Range Measurement</h2>
+    <h2>How to determine whether a senior is energetic or not?</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src = './resources/thinking.png' height="400px"></img></p>
+
+<p><code>Assumption: The longer they travel, the more energetic they might be</code></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>Energetic Levels Measurement</h2>
   </hgroup>
   <article data-timings="">
     <ol>
-<li><code>The website of the MRT</code> </li>
+<li><code>The website of the Metro</code> </li>
 <li>Using a parser written in Python</li>
 </ol>
 
@@ -270,33 +252,17 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-14" style="background:;">
+<slide class="" id="slide-15" style="background:;">
   <hgroup>
-    <h2>Moving Range Measurement</h2>
+    <h2>Energetic Levels Measurement</h2>
   </hgroup>
   <article data-timings="">
     <ol>
-<li>The website of the MRT </li>
+<li>The website of the Metro</li>
 <li><code>Using a parser written in Python</code></li>
 </ol>
 
-<p><img src = './resources/8.jpg' height="400px"></img>
-<img style="float: right;" src = './resources/9.jpg' height="400px"></img></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-15" style="background:;">
-  <hgroup>
-    <h2>Moving Range Measurement</h2>
-  </hgroup>
-  <article data-timings="">
-    <p>Comparison and combination of the parsed data with the raw data</p>
-
-<p><code>Ex: the user,1625328709, who lives in 古亭. And the total time he/she spend on traveling on 2014/1/19 are sum of traveling time from 古亭 to 台北車站 and from 台北車站 to 古亭, which is 7 + 7 = 14 min</code></p>
-
-<p><img style="float: right;" src = './resources/10.jpg' height="400px"></img></p>
+<p><img style="float: left;" src = './resources/9.jpg' height="400px"></img></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -304,12 +270,17 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
 
 <slide class="" id="slide-16" style="background:;">
   <hgroup>
-    <h2>Moving Range Measurement</h2>
+    <h2>Energetic Levels Measurement</h2>
   </hgroup>
   <article data-timings="">
-    <h1>Result:</h1>
+    <p>With the data parsed down and the raw data, we could 
+calculate travel time each senior spend each day to represent his/her energetic level</p>
 
-<p><img src = './resources/11.jpg' height="400px"></img></p>
+<p>Ex: the user,2766995571, who lives in Tucheng. And the total time the senior spend on traveling on 2014/1/19 are sum of traveling time from Tucheng to Technology Building and from Technology Building back to Tucheng, which is 34 + 34 = 68 min</p>
+
+<p><code>Tucheng -&gt; Technology Building -&gt; Tucheng</code></p>
+
+<p><img style="float: right;" src = './resources/10.jpg' height="400px"></img></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -317,21 +288,36 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
 
 <slide class="" id="slide-17" style="background:;">
   <hgroup>
-    <h2>Moving Range Measurement</h2>
+    <h2>Energetic Levels Measurement</h2>
+  </hgroup>
+  <article data-timings="">
+    <h1>Result:</h1>
+
+<h1>The travel time the seniors lived around Tucheng station spent each day</br></h1>
+
+<p><img src = './resources/11.jpg' height="400px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>Energetic Levels Measurement</h2>
   </hgroup>
   <article data-timings="">
     <h1>Now we get:</h1>
 
 <ol>
-<li>Where those user live.</li>
-<li>How long each user spends on the MRT.</li>
+<li>Where those seniors live</li>
+<li>How long each senior spends on Metro</li>
 </ol>
 
   </article>
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="dark segue" id="slide-18" style="background:;">
+<slide class="dark segue" id="slide-19" style="background:;">
   <hgroup>
     <h2>Preprocessing</h2>
   </hgroup>
@@ -341,35 +327,20 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-19" style="background:;">
-  <hgroup>
-    <h2>Preprocessing</h2>
-  </hgroup>
-  <article data-timings="">
-    <p>First, we plot those stations with averages</p>
-
-<pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= mrt)+
-  theme_grey(base_family=&quot;STHeiti&quot;)
-</code></pre>
-
-<p><img style="float: middle;" src = './resources/12.jpg' ></img></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
 <slide class="" id="slide-20" style="background:;">
   <hgroup>
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p>Keep those above median </p>
+    <p>We plot these information on GoogleMap</br>
+<code>the bigger the dot is, the more average travel time those seniors live there spent</code></p>
 
-<pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= 
-  mrt[mrt$AvgDist&gt; median(mrt$AvgDist),])+theme_grey(base_family=&quot;STHeiti&quot;)
+<pre><code class="r">library(ggmap)
+map &lt;- qmap(location = c(lon = 121.512386, lat = 25.056269), zoom = 12)
+map +geom_point(aes(x=lon, y=lat,size=AvgTravalTime),color=&#39;black&#39;,data= metro)
 </code></pre>
 
-<p><img style="float: middle;" src = './resources/13.jpg' ></img></p>
+<p><img style="float: middle;" src = './resources/12.jpg' ></img></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -380,13 +351,12 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p><code>Of course those people live in these areas spend more time on commuting....</code></p>
+    <ul>
+<li>Of course those people live in outlying areas spend more time on commuting.... </br></li>
+<li><code>Travel Time =  Outlying Degree &amp; Energetic Levels</code></li>
+</ul>
 
-<pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=AvgDist),color=&#39;black&#39;,data= 
-  mrt[mrt$AvgDist&gt; median(mrt$AvgDist),])+theme_grey(base_family=&quot;STHeiti&quot;)
-</code></pre>
-
-<p><img style="float: middle;" src = './resources/14.jpg' ></img></p>
+<p><img style="float: middle;" src = './resources/12.jpg' ></img></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -397,7 +367,10 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p><code>We need to find some adjustment variable to adjust the traveling time to different station.</code></p>
+    <ul>
+<li><code>Travel Time =  Outlying Degree &amp; Energetic Levels</code></li>
+<li>We need to find a adjustment variable which could stand for <code>the outlying degree</code> to adjust the travel time based on different stations.</li>
+</ul>
 
 <p><img src = './resources/15.jpg' height="400px"></img></p>
 
@@ -410,9 +383,12 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p><code>The Average traveling Time to each other Station.</code><br />
-<code>For example: 台北車站:16.30435 (min) and 淡水:46.94565 (min)</code><br />
-<code>By dividing this adjusting factor, we could realize where the real energetic senior citizens lived in.</code></p>
+    <ul>
+<li>Calculate <code>&quot;Outlyzing Degree&quot;</code> for each station, <code>the average travel time between it to any other stations.</code><br /></li>
+<li>Take two stations as examples: Taipei Main Station(central):16.30435 (min) and Tamsui(outlying):46.94565 (min)<br /></li>
+<li>The travel time a senior spend need to divide by its corresponding outlyzing degree(based <br />
+on where he/she lives) to get <code>the adjusted travel time</code>, which could actually show the energetic level of each senior.</li>
+</ul>
 
 <p><img src = './resources/16.jpg'></img>
 <img style="float: center;" src = './resources/17.jpg'></img></p>
@@ -426,126 +402,7 @@ latest_f &lt;- aggregate( Station~ Id, latest, most_fequent)
     <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <p>Calculate the Benchmark (3rd Qu.)</p>
-
-<pre><code class="r">tmp=0
-files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
-for(f in files){
-  tmp1 &lt;- read.csv(paste0(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;,f),header = T)
-  ind &lt;- which(mrt$name==strsplit(f,&quot;.csv&quot;)[[1]])
-  tmp &lt;- c(tmp,(tmp1$Station[!is.na(tmp1$Station)]/ mrt$adjV[ind]))
-}
-summary(tmp[-1])
-</code></pre>
-
-<p><img src = './resources/18.jpg' ></img></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-25" style="background:;">
-  <hgroup>
-    <h2>Preprocessing</h2>
-  </hgroup>
-  <article data-timings="">
-    <p>Calculate number of energetic senior citizens</p>
-
-<pre><code class="r">files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
-for(f in files){
-  tmp &lt;- read.csv(paste0(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;,f),header = T)
-  ind &lt;- which(mrt$name==strsplit(f,&quot;.csv&quot;)[[1]])
-  mrt$n_Energetic[ind] &lt;- sum((tmp1$Station[!is.na(tmp1$Station)]/ mrt$adjV[ind]) &gt; 1.698)
-}
-</code></pre>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-26" style="background:;">
-  <hgroup>
-    <h2>Plot it on GoogleMap</h2>
-  </hgroup>
-  <article data-timings="">
-    <pre><code class="r">map +geom_point(aes(x=lon, y=lat,size=n_Energetic),color=&#39;black&#39;,data= 
-  mrt)+theme_grey(base_family=&quot;STHeiti&quot;)
-</code></pre>
-
-<p><img src = './resources/19.jpg' ></img></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-27" style="background:;">
-  <hgroup>
-    <h2>Preprocessing</h2>
-  </hgroup>
-  <article data-timings="">
-    <ol>
-<li>Try to use predicative model to seperate all of Taipei City in to different zones with high populated energetic senior citizens</li>
-<li>Choose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive</li>
-</ol>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="dark segue" id="slide-28" style="background:;">
-  <hgroup>
-    <h2>Model Building</h2>
-  </hgroup>
-  <article data-timings="">
-    
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-29" style="background:;">
-  <hgroup>
-    <h2>Model Building</h2>
-  </hgroup>
-  <article data-timings="">
-    <pre><code class="r">tr.control = trainControl(method = &quot;cv&quot;, number = 2)
-cp.grid = expand.grid( .cp = (0:15)*0.001)
-tr = train(n_energetic ~ lat + lon, data = mrt, method = &quot;rpart&quot;, 
-           trControl = tr.control, tuneGrid = cp.grid)
-best.tree = tr$finalModel
-prp(best.tree, digits = 8)
-</code></pre>
-
-<p><img src = './resources/20.jpg' height="400px", margin:auto></img></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-30" style="background:;">
-  <hgroup>
-    <h2>Model Building</h2>
-  </hgroup>
-  <article data-timings="">
-    <h1>Hot Zone:</h1>
-
-<pre><code class="r">p = map + geom_point(aes(x=lon, y=lat,size=n_Energetic), col =&#39;black&#39;, data= mrt)
-
-p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) + 
-  geom_hline(yintercept = 25.062953)+geom_vline(xintercept = 121.55131)
-</code></pre>
-
-<p><img src = './resources/21.jpg' , margin:auto></img></p>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-31" style="background:;">
-  <hgroup>
-    <h2>Something is still going wrong</h2>
-  </hgroup>
-  <article data-timings="">
-    <p><code>Another preprocessing is Needed</code></p>
+    <p><code>Another thing is needed</code></p>
 
 <p><img src = './resources/22.jpg' height="400px"></img></p>
 
@@ -553,7 +410,7 @@ p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) +
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-32" style="background:;">
+<slide class="" id="slide-25" style="background:;">
   <hgroup>
     <h2>Normalization</h2>
   </hgroup>
@@ -564,27 +421,26 @@ p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) +
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-33" style="background:;">
+<slide class="" id="slide-26" style="background:;">
   <hgroup>
-    <h2>Preprocessing Again</h2>
+    <h2>Preprocessing (Code)</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">tmp=data.frame(Station=0,name=&quot;&quot;)
-files &lt;- list.files(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;)
+    <pre><code class="r">all=data.frame(TravelTime=0,station=&quot;&quot;)
+files &lt;- list.files(&quot;~/Desktop/MetroCard/TravelTime/&quot;)
 for(f in files){
-  tmp1 &lt;- read.csv(paste0(&quot;~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/&quot;,f),header = T)
-  tmp1$name &lt;- strsplit(f,&quot;.csv&quot;)[[1]]
-  ind &lt;- which(mrt$name==strsplit(f,&quot;.csv&quot;)[[1]])
-  tmp &lt;- rbind(tmp,tmp1[!is.na(tmp1$Station),c(&quot;Station&quot;,&quot;name&quot;)])
+  tmp &lt;- read.csv(paste0(&quot;~/Desktop/MetroCard/TravelTime/&quot;,f),header = T)
+  tmp$station &lt;- strsplit(f,&quot;.csv&quot;)[[1]]
+  all &lt;- rbind(all,tmp[!is.na(tmp$TravelTime),c(&quot;TravelTime&quot;,&quot;station&quot;)])
 }
-tmp = tmp[-1,]
-tmp$Normalized.Dist &lt;- normalize(tmp$Station)
-tmp$AdjDist.Normalized &lt;- 0
-
-for(i in unique(as.character(mrt$name))){
-  tmp[tmp$name==i,&quot;AdjDist.Normalized&quot;] &lt;- tmp[tmp$name==i,&quot;Normalized.Dist&quot;]/mrt$adjV.Normalized[mrt$name==i]
+all = all[-1,]
+all$Normalized.TravelTime &lt;- normalize(all$TravelTime)
+all$AdjedAvgTravelTime.Normalized &lt;- 0
+metro$adjV.Normalized &lt;- normalize(metro$TravalTime)
+for(i in unique(as.character(metro$name))){
+  all[all$station==i,&quot;AdjedTravelTime.Normalized&quot;] &lt;- all[all$name==i,&quot;Normalized.Dist&quot;]/metro$adjV.Normalized[metro$name==i]
 }
-summary(tmp$AdjDist.Normalized)
+summary(all$AdjedTravelTime.Normalized)
 </code></pre>
 
 <p><img src = './resources/24.jpg' , margin:auto></img></p>
@@ -593,17 +449,17 @@ summary(tmp$AdjDist.Normalized)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-34" style="background:;">
+<slide class="" id="slide-27" style="background:;">
   <hgroup>
-    <h2>Preprocessing Again</h2>
+    <h2>Preprocessing</h2>
   </hgroup>
   <article data-timings="">
-    <pre><code class="r">for(i in unique(as.character(mrt$name))){
-  mrt$n_Energetic.normalized[mrt$name==i] &lt;- 
-    sum(tmp$AdjDist.Normalized[tmp$name==i] &gt; 1.0260)
+    <pre><code class="r">for(i in unique(as.character(metro$name))){
+  metro$n_Energetic.normalized[metro$name==i] &lt;- 
+    sum(all$adjedTravelTime.Normalized[all$station==i] &gt; 1.0260)
 }
-p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized),
-                     col =heat.colors(1), data= mrt)
+p = map + geom_point(aes(x=lon, y=lat,size=n_Energetic.normalized),
+                     col =heat.colors(1), data= metro)
 </code></pre>
 
 <p><img src = './resources/25.jpg' height="400px"></img></p>
@@ -612,14 +468,38 @@ p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized),
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-35" style="background:;">
+<slide class="" id="slide-28" style="background:;">
   <hgroup>
-    <h2>Model Building Again</h2>
+    <h2>Preprocessing</h2>
+  </hgroup>
+  <article data-timings="">
+    <ol>
+<li>Try to build a model to seperate all of Taipei City into high or low populated zones by energetic seniors</li>
+<li>Choose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive</li>
+</ol>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="dark segue" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>Model Building</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>Model Building</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">tr.control = trainControl(method = &quot;cv&quot;, number = 2)
 cp.grid = expand.grid( .cp = (0:15)*0.001)
-tr = train(n_Energetic.normalized ~ lat + lon, data = mrt, method = &quot;rpart&quot;,
+tr = train(n_Energetic.normalized ~ lat + lon, data = metro, method = &quot;rpart&quot;,
            trControl = tr.control, tuneGrid = cp.grid)
 best.tree = tr$finalModel
 prp(best.tree, digits = 8)
@@ -631,13 +511,13 @@ prp(best.tree, digits = 8)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-36" style="background:;">
+<slide class="" id="slide-31" style="background:;">
   <hgroup>
-    <h2>Model Building Again</h2>
+    <h2>Model Building</h2>
   </hgroup>
   <article data-timings="">
     <pre><code class="r">p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized), 
-                     col =heat.colors(1), data= mrt)
+                     col =heat.colors(1), data= metro)
 </code></pre>
 
 <p><img style="float: left;" src = './resources/27.jpg' height="380px"></img>
@@ -647,7 +527,58 @@ prp(best.tree, digits = 8)
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-37" style="background:;">
+<slide class="dark segue" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>Few more things....</h2>
+  </hgroup>
+  <article data-timings="">
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>Probability Distribution of travel time each senior spend (each day) for each station</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src = './resources/Dapinglin.jpg' height="400px" , margin:auto></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-34" style="background:;">
+  <hgroup>
+    <h2>HeatMap for each station</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>weekdays v.s hours</p>
+
+<p><img src = './resources/Gongguan.png' height="400px" , margin:auto></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-35" style="background:;">
+  <hgroup>
+    <h2>Stability of outbound counts for each station</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Each line stand for each day</li>
+<li>Stable v.s Unstable</li>
+</ul>
+
+<p><img style="float: left;" src = './resources/Guting.pdf' height="330px"></img>
+<img style="float: right;" src = './resources/Taipei_Bridge.pdf' height="330px"></img></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-36" style="background:;">
   <article data-timings="">
     <p><img src = './resources/29.jpg' height="700px",width="1200px" , margin:auto></img></p>
 
@@ -661,31 +592,31 @@ prp(best.tree, digits = 8)
     <ul>
       <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=1 title='Leverage data from Easy Card to find out the potential demand of senior citizens for exercise'>
+        data-slide=1 title='Motivation'>
          1
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='Outline'>
+        data-slide=2 title='The Main Idea'>
          2
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Sampling Process'>
+        data-slide=3 title='Outline'>
          3
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=4 title='Raw Data'>
+        data-slide=4 title='Raw Data Demonstrating'>
          4
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=5 title='Sampling Process'>
+        data-slide=5 title='Raw Data'>
          5
       </a>
     </li>
@@ -727,43 +658,43 @@ prp(best.tree, digits = 8)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=12 title='Moving Range Measurement'>
+        data-slide=12 title='Energetic Levels Measurement'>
          12
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=13 title='Moving Range Measurement'>
+        data-slide=13 title='How to determine whether a senior is energetic or not?'>
          13
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=14 title='Moving Range Measurement'>
+        data-slide=14 title='Energetic Levels Measurement'>
          14
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=15 title='Moving Range Measurement'>
+        data-slide=15 title='Energetic Levels Measurement'>
          15
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=16 title='Moving Range Measurement'>
+        data-slide=16 title='Energetic Levels Measurement'>
          16
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=17 title='Moving Range Measurement'>
+        data-slide=17 title='Energetic Levels Measurement'>
          17
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=18 title='Preprocessing'>
+        data-slide=18 title='Energetic Levels Measurement'>
          18
       </a>
     </li>
@@ -805,13 +736,13 @@ prp(best.tree, digits = 8)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=25 title='Preprocessing'>
+        data-slide=25 title='Normalization'>
          25
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=26 title='Plot it on GoogleMap'>
+        data-slide=26 title='Preprocessing (Code)'>
          26
       </a>
     </li>
@@ -823,7 +754,7 @@ prp(best.tree, digits = 8)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=28 title='Model Building'>
+        data-slide=28 title='Preprocessing'>
          28
       </a>
     </li>
@@ -841,44 +772,38 @@ prp(best.tree, digits = 8)
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=31 title='Something is still going wrong'>
+        data-slide=31 title='Model Building'>
          31
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=32 title='Normalization'>
+        data-slide=32 title='Few more things....'>
          32
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=33 title='Preprocessing Again'>
+        data-slide=33 title='Probability Distribution of travel time each senior spend (each day) for each station'>
          33
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=34 title='Preprocessing Again'>
+        data-slide=34 title='HeatMap for each station'>
          34
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=35 title='Model Building Again'>
+        data-slide=35 title='Stability of outbound counts for each station'>
          35
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=36 title='Model Building Again'>
+        data-slide=36 title='NA'>
          36
-      </a>
-    </li>
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=37 title='NA'>
-         37
       </a>
     </li>
   </ul>

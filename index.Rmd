@@ -1,5 +1,5 @@
 ---
-title       : Analysis of Senior Easy Card Users Behavior
+title       : Analysis of Senior Metro Card Users Behavior
 subtitle    : 
 author      : Chun-Chang Siao
 job         : 
@@ -11,51 +11,49 @@ mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 
 ---
-## Leverage data from Easy Card to find out the potential demand of senior citizens for exercise
+## Motivation
+
+* Question: Where is the best place to locate the Elderly Sports Center?
+* Assumption: The more energetic seniors live there, the more appropriate will be <br/>
+
+* Types of metro cards in Taipei: <br/>
+  * Adult: Standard fare for the general public <br/>
+  * Student: For registered students only <br/>
+  * `Senior: seniors aged over 65` <br/>
+
+* Leverege data from Metro Cards to solve this problem
+
+---
+## The Main Idea
+
+* Leverage data from Metro Cards to find out which areas of Taipei City are most populated by energetic seniors
+
+* The area with the most eneretic seniors might be the best place to locate the elderly sports center </br>
 
 <img style="float: middle;" src = './resources/1.jpg' height="300px",width='900px'></img>
-
 
 
 ---
 ## Outline
 
-Sampling Process
+Raw Data Demonstrating
 
 Residence Tagging
 
-Moving Range Measurement 
+Energetic Levels Measurement  
 
 Preprocessing
 
 CART Model Building
 
 --- .dark .segue
-## Sampling Process
+## Raw Data Demonstrating 
 
 ---
 ## Raw Data
 
 
 <img src = './resources/2.jpg' height="400px"></img>
-
----
-## Sampling Process
-
-Season | Week | Duration
-----|------|----
-S1 | week 1  | 1/19-1/25
-S1 | week 2  | 3/16-3/22
-S2 | week 3  | 4/13-4/19
-S2 | week 4  | 6/15-6/21
-S3 | week 5  | 7/20-7/26
-S3 | week 6  | 9/14-9/20
-S4 | week 7  | 10/19-10/25
-S4 | week 8  | 12/7-12/13
-
-# *National Holidays are not included
-
-# * TimeStamp: Out of Station 
 
 --- .dark .segue
 
@@ -64,12 +62,13 @@ S4 | week 8  | 12/7-12/13
 ---
 ## Time Information Extraction
 ```{r , eval=FALSE}
-rawData1$hour <- hour(rawData1$Time)
-rawData1$year <- year(rawData1$Time)
-rawData1$month <- month(rawData1$Time)
-rawData1$day <- day(rawData1$Time)
-rawData1$weekday <- weekdays(rawData1$Time)
-rawData1$date <- format(rawData1$Time, format="%B %d %Y")
+library(lubridate)
+rawData1$hour <- hour(rawData1$Time_Outbound)
+rawData1$year <- year(rawData1$Time_Outbound)
+rawData1$month <- month(rawData1$Time_Outbound)
+rawData1$day <- day(rawData1$Time_Outbound)
+rawData1$weekday <- weekdays(rawData1$Time_Outbound)
+rawData1$date <- format(rawData1$Time_Outbound, format="%B %d %Y")
 
 ```
 <img src = './resources/3.jpg' ></img>
@@ -77,7 +76,9 @@ rawData1$date <- format(rawData1$Time, format="%B %d %Y")
 ---
 ## Keep the last record of each user each day
 ```{r , eval=FALSE}
-latest_d <- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time))
+library(dplyr)
+lastRecord <- summarise(group_by(rawData1,Id,year,month,day),
+                      lastRecord_in_EachDay= max(Time_Outbound))
 ```
 <img src = './resources/4.jpg' ></img>
 
@@ -85,8 +86,8 @@ latest_d <- summarise(group_by(rawData1,Id,year,month,day),latest_day= max(Time)
 ---
 ## Merge it with raw data to find the station name
 ```{r , eval=FALSE}
-latest <- merge(rawData1,latest_d, by.x = c("Id","Time"),by.y = c("Id","latest_day"),
-                all.y = T)
+lastRecord_merged <- merge(rawData1,lastRecord, by.x = c("Id","Time_Outbound"),
+                by.y = c("Id","lastRecord_in_EachDay"),all.y = T)
 ```
 <img style="float: middle;" src = './resources/5.jpg' ></img>
 
@@ -97,7 +98,7 @@ latest <- merge(rawData1,latest_d, by.x = c("Id","Time"),by.y = c("Id","latest_d
 most_fequent <- function(x){
   return(names(sort(table(x),decreasing=TRUE)[1]))
 }
-latest_f <- aggregate( Station~ Id, latest, most_fequent)
+liveTable <- aggregate( Station~ Id, lastRecord_merged, most_fequent)
 ```
 <img style="float: middle;" src = './resources/6.jpg' ></img>
 
@@ -106,54 +107,70 @@ latest_f <- aggregate( Station~ Id, latest, most_fequent)
 ## Combined with Google Map
 
 ```{r , eval=FALSE}
-map +geom_point(aes(x=lon, y=lat,size=n_citizen),color="black",data= mrt)+
-  theme_grey(base_family="STHeiti")
+library(ggmap)
+map <- qmap(location = c(lon = 121.512386, lat = 25.056269), zoom = 12)
+map +geom_point(aes(x=lon, y=lat,size=n_citizen),color="black",data= metro)
 ```
 <img style="float: middle;" src = './resources/7.jpg' ></img>
 
 --- .dark .segue
-## Moving Range Measurement 
+## Energetic Levels Measurement 
 
 --- 
-## Moving Range Measurement 
 
-1. `The website of the MRT` 
+## How to determine whether a senior is energetic or not?
+
+<img src = './resources/thinking.png' height="400px"></img>
+
+`Assumption: The longer they travel, the more energetic they might be `
+
+
+
+
+---
+## Energetic Levels Measurement 
+
+1. `The website of the Metro` 
 2. Using a parser written in Python
 
 <img src = './resources/8.jpg' height="400px"></img>
 
 ---
-## Moving Range Measurement 
+## Energetic Levels Measurement
 
-1. The website of the MRT 
+1. The website of the Metro
 2. `Using a parser written in Python`
 
-<img src = './resources/8.jpg' height="400px"></img>
-<img style="float: right;" src = './resources/9.jpg' height="400px"></img>
+
+<img style="float: left;" src = './resources/9.jpg' height="400px"></img>
 
 --- 
-## Moving Range Measurement 
+## Energetic Levels Measurement
 
-Comparison and combination of the parsed data with the raw data
+With the data parsed down and the raw data, we could 
+calculate travel time each senior spend each day to represent his/her energetic level
 
-`Ex: the user,1625328709, who lives in 古亭. And the total time he/she spend on traveling on 2014/1/19 are sum of traveling time from 古亭 to 台北車站 and from 台北車站 to 古亭, which is 7 + 7 = 14 min`
+Ex: the user,2766995571, who lives in Tucheng. And the total time the senior spend on traveling on 2014/1/19 are sum of traveling time from Tucheng to Technology Building and from Technology Building back to Tucheng, which is 34 + 34 = 68 min
+
+`Tucheng -> Technology Building -> Tucheng`
 
 <img style="float: right;" src = './resources/10.jpg' height="400px"></img>
 
 --- 
 
-## Moving Range Measurement 
+## Energetic Levels Measurement
 
 # Result:
+# The travel time the seniors lived around Tucheng station spent each day</br>
 
 <img src = './resources/11.jpg' height="400px"></img>
 
 ---
-## Moving Range Measurement 
+## Energetic Levels Measurement
 # Now we get:
 
-1. Where those user live.
-2. How long each user spends on the MRT.
+1. Where those seniors live
+2. How long each senior spends on Metro
 
 --- .dark .segue
 
@@ -162,49 +179,40 @@ Comparison and combination of the parsed data with the raw data
 ---
 ## Preprocessing
 
-First, we plot those stations with averages
+We plot these information on GoogleMap</br>
+`the bigger the dot is, the more average travel time those seniors live there spent`
 
 ```{r, eval=FALSE}
-map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data= mrt)+
-  theme_grey(base_family="STHeiti")
+library(ggmap)
+map <- qmap(location = c(lon = 121.512386, lat = 25.056269), zoom = 12)
+map +geom_point(aes(x=lon, y=lat,size=AvgTravalTime),color='black',data= metro)
 ```
 <img style="float: middle;" src = './resources/12.jpg' ></img>
 
 ---
+
 ## Preprocessing
 
-Keep those above median 
+* Of course those people live in outlying areas spend more time on commuting.... </br>
+* `Travel Time =  Outlying Degree & Energetic Levels`
 
-```{r, eval=FALSE}
-map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data= 
-  mrt[mrt$AvgDist> median(mrt$AvgDist),])+theme_grey(base_family="STHeiti")
-```
-<img style="float: middle;" src = './resources/13.jpg' ></img>
+<img style="float: middle;" src = './resources/12.jpg' ></img>
 
 ---
 ## Preprocessing
-
-`Of course those people live in these areas spend more time on commuting....`
-
-```{r, eval=FALSE}
-map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data= 
-  mrt[mrt$AvgDist> median(mrt$AvgDist),])+theme_grey(base_family="STHeiti")
-```
-<img style="float: middle;" src = './resources/14.jpg' ></img>
-
----
-## Preprocessing
-
-`We need to find some adjustment variable to adjust the traveling time to different station.`
+* `Travel Time =  Outlying Degree & Energetic Levels`
+* We need to find a adjustment variable which could stand for `the outlying degree` to adjust the travel time based on different stations.
 
 <img src = './resources/15.jpg' height="400px"></img>
 
 ---
 ## Preprocessing
 
-`The Average traveling Time to each other Station.`<br />
-`For example: 台北車站:16.30435 (min) and 淡水:46.94565 (min)`<br />
-`By dividing this adjusting factor, we could realize where the real energetic senior citizens lived in.`
+* Calculate `"Outlyzing Degree"` for each station, `the average travel time between it to any other stations.`<br />
+* Take two stations as examples: Taipei Main Station(central):16.30435 (min) and Tamsui(outlying):46.94565 (min)<br />
+* The travel time a senior spend need to divide by its corresponding outlyzing degree(based <br />
+on where he/she lives) to get `the adjusted travel time`, which could actually show the energetic level of each senior.
+
 
 <img src = './resources/16.jpg'></img>
 <img style="float: center;" src = './resources/17.jpg'></img>
@@ -212,49 +220,55 @@ map +geom_point(aes(x=lon, y=lat,size=AvgDist),color='black',data=
 ---
 ## Preprocessing
 
-Calculate the Benchmark (3rd Qu.)
+`Another thing is needed`
 
-```{r, eval=FALSE}
-tmp=0
-files <- list.files("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/")
+<img src = './resources/22.jpg' height="400px"></img>
+
+
+---
+## Normalization 
+
+<img src = './resources/23.jpg' height="400px"></img>
+
+---
+## Preprocessing (Code)
+
+```{r ,eval=FALSE}
+all=data.frame(TravelTime=0,station="")
+files <- list.files("~/Desktop/MetroCard/TravelTime/")
 for(f in files){
-  tmp1 <- read.csv(paste0("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/",f),header = T)
-  ind <- which(mrt$name==strsplit(f,".csv")[[1]])
-  tmp <- c(tmp,(tmp1$Station[!is.na(tmp1$Station)]/ mrt$adjV[ind]))
+  tmp <- read.csv(paste0("~/Desktop/MetroCard/TravelTime/",f),header = T)
+  tmp$station <- strsplit(f,".csv")[[1]]
+  all <- rbind(all,tmp[!is.na(tmp$TravelTime),c("TravelTime","station")])
 }
-summary(tmp[-1])
+all = all[-1,]
+all$Normalized.TravelTime <- normalize(all$TravelTime)
+all$AdjedAvgTravelTime.Normalized <- 0
+metro$adjV.Normalized <- normalize(metro$TravalTime)
+for(i in unique(as.character(metro$name))){
+  all[all$station==i,"AdjedTravelTime.Normalized"] <- all[all$name==i,"Normalized.Dist"]/metro$adjV.Normalized[metro$name==i]
+}
+summary(all$AdjedTravelTime.Normalized)
 ```
-
-<img src = './resources/18.jpg' ></img>
+<img src = './resources/24.jpg' , margin:auto></img>
 
 ---
 ## Preprocessing
-
-Calculate number of energetic senior citizens
-```{r, eval=FALSE}
-files <- list.files("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/")
-for(f in files){
-  tmp <- read.csv(paste0("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/",f),header = T)
-  ind <- which(mrt$name==strsplit(f,".csv")[[1]])
-  mrt$n_Energetic[ind] <- sum((tmp1$Station[!is.na(tmp1$Station)]/ mrt$adjV[ind]) > 1.698)
+```{r ,eval=FALSE}
+for(i in unique(as.character(metro$name))){
+  metro$n_Energetic.normalized[metro$name==i] <- 
+    sum(all$adjedTravelTime.Normalized[all$station==i] > 1.0260)
 }
+p = map + geom_point(aes(x=lon, y=lat,size=n_Energetic.normalized),
+                     col =heat.colors(1), data= metro)
 
 ```
 
----
-## Plot it on GoogleMap
-
-```{r, eval=FALSE}
-map +geom_point(aes(x=lon, y=lat,size=n_Energetic),color='black',data= 
-  mrt)+theme_grey(base_family="STHeiti")
-
-```
-<img src = './resources/19.jpg' ></img>
+<img src = './resources/25.jpg' height="400px"></img>
 
 ---
-
 ## Preprocessing
-1. Try to use predicative model to seperate all of Taipei City in to different zones with high populated energetic senior citizens
+1. Try to build a model to seperate all of Taipei City into high or low populated zones by energetic seniors
 2. Choose CART (Classification and Regression Trees), becasue it could capture the non-linear characteristic and is interpretive
 
 --- .dark .segue
@@ -267,85 +281,7 @@ map +geom_point(aes(x=lon, y=lat,size=n_Energetic),color='black',data=
 ```{r ,eval=FALSE}
 tr.control = trainControl(method = "cv", number = 2)
 cp.grid = expand.grid( .cp = (0:15)*0.001)
-tr = train(n_energetic ~ lat + lon, data = mrt, method = "rpart", 
-           trControl = tr.control, tuneGrid = cp.grid)
-best.tree = tr$finalModel
-prp(best.tree, digits = 8)
-```
-
-<img src = './resources/20.jpg' height="400px", margin:auto></img>
-
----
-## Model Building
-
-# Hot Zone:
-```{r ,eval=FALSE}
-p = map + geom_point(aes(x=lon, y=lat,size=n_Energetic), col ='black', data= mrt)
-
-p+geom_vline(xintercept = 121.50728) +geom_hline(yintercept = 25.01963) + 
-  geom_hline(yintercept = 25.062953)+geom_vline(xintercept = 121.55131)
-```
-
-<img src = './resources/21.jpg' , margin:auto></img>
-
-
----
-## Something is still going wrong
-
-`Another preprocessing is Needed`
-
-<img src = './resources/22.jpg' height="400px"></img>
-
-
----
-## Normalization 
-
-<img src = './resources/23.jpg' height="400px"></img>
-
----
-## Preprocessing Again
-
-```{r ,eval=FALSE}
-tmp=data.frame(Station=0,name="")
-files <- list.files("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/")
-for(f in files){
-  tmp1 <- read.csv(paste0("~/Desktop/悠遊卡/EasyCard/量化移動範圍_表/",f),header = T)
-  tmp1$name <- strsplit(f,".csv")[[1]]
-  ind <- which(mrt$name==strsplit(f,".csv")[[1]])
-  tmp <- rbind(tmp,tmp1[!is.na(tmp1$Station),c("Station","name")])
-}
-tmp = tmp[-1,]
-tmp$Normalized.Dist <- normalize(tmp$Station)
-tmp$AdjDist.Normalized <- 0
-
-for(i in unique(as.character(mrt$name))){
-  tmp[tmp$name==i,"AdjDist.Normalized"] <- tmp[tmp$name==i,"Normalized.Dist"]/mrt$adjV.Normalized[mrt$name==i]
-}
-summary(tmp$AdjDist.Normalized)
-```
-<img src = './resources/24.jpg' , margin:auto></img>
-
----
-## Preprocessing Again
-```{r ,eval=FALSE}
-for(i in unique(as.character(mrt$name))){
-  mrt$n_Energetic.normalized[mrt$name==i] <- 
-    sum(tmp$AdjDist.Normalized[tmp$name==i] > 1.0260)
-}
-p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized),
-                     col =heat.colors(1), data= mrt)
-
-```
-
-<img src = './resources/25.jpg' height="400px"></img>
-
----
-## Model Building Again
-
-```{r ,eval=FALSE}
-tr.control = trainControl(method = "cv", number = 2)
-cp.grid = expand.grid( .cp = (0:15)*0.001)
-tr = train(n_Energetic.normalized ~ lat + lon, data = mrt, method = "rpart",
+tr = train(n_Energetic.normalized ~ lat + lon, data = metro, method = "rpart",
            trControl = tr.control, tuneGrid = cp.grid)
 best.tree = tr$finalModel
 prp(best.tree, digits = 8)
@@ -354,15 +290,43 @@ prp(best.tree, digits = 8)
 <img src = './resources/26.jpg' height="400px"></img>
 
 ---
-## Model Building Again
+## Model Building
 ```{r, eval=FALSE}
 p = map + geom_point(aes(x=lon, y=lat,size=mrt$n_Energetic.normalized), 
-                     col =heat.colors(1), data= mrt)
+                     col =heat.colors(1), data= metro)
 ```
 <img style="float: left;" src = './resources/27.jpg' height="380px"></img>
 <img style="float: right;" src = './resources/28.jpg' height="330px"></img>
 
+--- .dark .segue
+
+## Few more things....
+
+
 ---
+## Probability Distribution of travel time each senior spend (each day) for each station 
+<img src = './resources/Dapinglin.jpg' height="400px" , margin:auto></img>
+
+
+---
+
+## HeatMap for each station
+
+weekdays v.s hours
+
+<img src = './resources/Gongguan.png' height="400px" , margin:auto></img>
+
+---
+## Stability of outbound counts for each station 
+
+* Each line stand for each day
+* Stable v.s Unstable
+
+<img style="float: left;" src = './resources/Guting.pdf' height="330px"></img>
+<img style="float: right;" src = './resources/Taipei_Bridge.pdf' height="330px"></img>
+
+---
+
 <img src = './resources/29.jpg' height="700px",width="1200px" , margin:auto></img>
 
 
